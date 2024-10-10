@@ -68,7 +68,7 @@ Once you  run the python file , the ```GUI``` will be displayed.
         e/c : increase/decrease only angular speed by 10%
 
         CTRL-C to quit
-
+ 
 # Mapping
 
 - Press `Autonomous Mode` button
