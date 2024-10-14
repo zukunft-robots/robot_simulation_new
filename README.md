@@ -95,7 +95,7 @@ Once you  run the python file , the ```GUI``` will be displayed.
 - Once you map the complete environment, Press `Save Map` button.
 
 # Autonomous Navigation
-
+ 
 - Press `Autonomous Mode` button
 - Press `Spawn robot` button to select the robot launch gazebo.
 - Press `Open Rviz2` button to visualize the robot.
