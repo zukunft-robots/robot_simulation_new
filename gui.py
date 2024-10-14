@@ -28,14 +28,15 @@ class GUI(QWidget):
         remote_screen = QWidget()
         remote_layout = QVBoxLayout()
 
+
         self.status_label = QLabel('Status: Ready', self)
         self.status_label.setAlignment(Qt.AlignCenter)
         remote_layout.addWidget(self.status_label)
 
-        self.btn_gazebo_remote = QPushButton(' Spawn Robot', self)
-        self.btn_gazebo_remote.setIcon(QIcon('icons/robot_icon.png'))
-        self.btn_gazebo_remote.clicked.connect(self.spawn_robot)
-        remote_layout.addWidget(self.btn_gazebo_remote)
+        self.btn_spwan_remote = QPushButton('Spawn Robot', self)
+        self.btn_spwan_remote.clicked.connect(self.show_robot_mode)
+        remote_layout.addWidget(self.btn_spwan_remote)
+
 
         self.btn_rviz_remote = QPushButton(' Open RVIZ2', self)
         self.btn_rviz_remote.setIcon(QIcon('icons/rviz_icon.png'))
@@ -61,10 +62,18 @@ class GUI(QWidget):
         self.status_label.setAlignment(Qt.AlignCenter)
         autonomous_layout.addWidget(self.status_label)
 
-        self.btn_spawn_autonomous = QPushButton('Spawn Robot', self)
-        self.btn_spawn_autonomous.setIcon(QIcon('icons/robot_icon.png'))
-        self.btn_spawn_autonomous.clicked.connect(self.spawn_robot)
-        autonomous_layout.addWidget(self.btn_spawn_autonomous)
+        # self.btn_spwan_autonomous = QPushButton('Spawn Robot', self)
+        # self.btn_spwan_autonomous.clicked.connect(self.show_robot_mode)
+        # remote_layout.addWidget(self.btn_spwan_autonomous)
+
+        # self.btn_spawn_autonomous = QPushButton('Spawn Robot', self)
+        # self.btn_spawn_autonomous.setIcon(QIcon('icons/robot_icon.png'))
+        # self.btn_spawn_autonomous.clicked.connect(self.spawn_robot)
+        # robot_layout.addWidget(self.btn_spawn_autonomous)
+
+        self.btn_spwan_remote = QPushButton('Spawn Robot', self)
+        self.btn_spwan_remote.clicked.connect(self.show_robot_autonomous_mode)
+        autonomous_layout.addWidget(self.btn_spwan_remote)
         
 
         self.btn_rviz_autonomous = QPushButton('Open RVIZ2', self)
@@ -129,13 +138,58 @@ class GUI(QWidget):
         self.btn_back_autonomous.clicked.connect(self.go_back_to_autonomous_mode)
         navigation_layout.addWidget(self.btn_back_autonomous)
 
+        # self.select_xacro_button = QPushButton('Select Xacro File')
+        # self.select_xacro_button.clicked.connect(self.select_xacro_file)
+        # remote_layout.addWidget(self.select_xacro_button)
+
         navigation_screen.setLayout(navigation_layout)
+
+        robot_screen = QWidget()
+        robot_layout = QVBoxLayout()
+
+        self.btn_select_robot = QPushButton(' Select Robot', self)
+        self.btn_select_robot.setIcon(QIcon('icons/robot_icon.png'))
+        self.btn_select_robot.clicked.connect(self.show_robot)
+        robot_layout.addWidget(self.btn_select_robot)
+
+        self.btn_gazebo_remote = QPushButton(' Spawn Robot', self)
+        self.btn_gazebo_remote.setIcon(QIcon('icons/robot_icon.png'))
+        self.btn_gazebo_remote.clicked.connect(self.spawn_robot)
+        robot_layout.addWidget(self.btn_gazebo_remote)
+
+        self.btn_back_spawn_remote = QPushButton('Back', self)
+        self.btn_back_spawn_remote.clicked.connect(self.go_back_to_remote_mode)
+        robot_layout.addWidget(self.btn_back_spawn_remote)
+
+        robot_screen.setLayout(robot_layout)
+
+        robot_screen_autonomous = QWidget()
+        robot_layout_autonomous = QVBoxLayout()
+
+        self.btn_select_robot = QPushButton(' Select Robot', self)
+        self.btn_select_robot.setIcon(QIcon('icons/robot_icon.png'))
+        self.btn_select_robot.clicked.connect(self.show_robot)
+        robot_layout_autonomous.addWidget(self.btn_select_robot)
+
+        self.btn_gazebo_remote = QPushButton(' Spawn Robot', self)
+        self.btn_gazebo_remote.setIcon(QIcon('icons/robot_icon.png'))
+        self.btn_gazebo_remote.clicked.connect(self.spawn_robot)
+        robot_layout_autonomous.addWidget(self.btn_gazebo_remote)
+
+        self.btn_back_spawn_autonomous = QPushButton('Back', self)
+        self.btn_back_spawn_autonomous.clicked.connect(self.go_back_to_autonomous_mode)
+        robot_layout_autonomous.addWidget(self.btn_back_spawn_autonomous)
+
+        robot_screen_autonomous.setLayout(robot_layout_autonomous)
+
 
         self.stacked_widget.addWidget(main_screen)
         self.stacked_widget.addWidget(remote_screen)
         self.stacked_widget.addWidget(autonomous_screen)
         self.stacked_widget.addWidget(mapping_screen)
         self.stacked_widget.addWidget(navigation_screen)
+        self.stacked_widget.addWidget(robot_screen)
+        self.stacked_widget.addWidget(robot_screen_autonomous)
 
         main_layout = QVBoxLayout()
         main_layout.addWidget(self.stacked_widget)
@@ -146,8 +200,14 @@ class GUI(QWidget):
         self.show()
 
     def spawn_robot(self):
-        print("launching gazebo")
-        self.run_command(['ros2', 'launch', 'sim_robot', 'gazebo.launch.py','world:=./src/robot_simulation_new/sim_robot/world/maze.world'], 'Spawning Robot...')
+
+        # self.run_command(['ros2', 'launch', 'sim_robot', 'gazebo.launch.py','world:=./src/robot_simulation_new/sim_robot/world/maze.world'], 'Spawning Robot...')
+        world_folder = './src/robot_simulation_new/sim_robot/world'
+        world_file_path, _ = QFileDialog.getOpenFileName(self, "Select World File", world_folder, "World Files (*.world);;All Files (*)")
+        if world_file_path:
+            self.run_command(['ros2', 'launch', 'sim_robot', 'gazebo.launch.py', f'world:={world_file_path}'], 'Spawning Robot...')
+        else:
+            QMessageBox.warning(self, 'Error', 'No world file selected.')
 
     def open_rviz(self):
         self.run_command(['ros2', 'run', 'rviz2', 'rviz2','-d','./src/robot_simulation_new/sim_robot/config/map.rviz'], 'Opening RVIZ2...')
@@ -206,6 +266,59 @@ class GUI(QWidget):
         print(f'Updated map_file_name in YAML to: {map_file_path}')
 
 
+    def show_robot(self):
+        self.xacro_file_path = None
+        #self.launch_file_path = './install/sim_robot/share/sim_robot/launch/rsp.launch.py'
+        options = QFileDialog.Options()
+        xacro_folder = './src/robot_simulation_new/sim_robot/description'  
+        file_name, _ = QFileDialog.getOpenFileName(self, "Select Xacro File", xacro_folder, "Xacro Files (*.urdf.xacro);;All Files (*)", options=options)
+        if file_name:
+            self.xacro_file_path = file_name
+            self.status_label.setText(f'Selected Xacro: {file_name}')
+            self.update_launch_file()  
+        else:
+            self.status_label.setText('No xacro file selected')
+
+    def update_launch_file(self):
+        if self.xacro_file_path is None:
+            QMessageBox.warning(self, 'Error', 'No xacro file selected.')
+            return
+
+       
+        new_xacro_file_name = os.path.basename(self.xacro_file_path)
+
+       
+        launch_file_path = './install/sim_robot/share/sim_robot/launch/rsp.launch.py'  
+
+        try:
+         
+            with open(launch_file_path, 'r') as file:
+                launch_content = file.readlines()
+
+        
+            updated_content = []
+            for line in launch_content:
+                if 'default_value=os.path.join(' in line and '.xacro' in line:
+                
+                    line_parts = line.split(',')
+                    for i, part in enumerate(line_parts):
+                        if '.xacro' in part:
+                            line_parts[i] = f" '{new_xacro_file_name}')"
+                    updated_line = ','.join(line_parts)
+                    updated_content.append(updated_line + '\n')
+                    self.status_label.setText(f'Updated xacro file to: {new_xacro_file_name}')
+                else:
+                    updated_content.append(line)
+
+          
+            with open(launch_file_path, 'w') as file:
+                file.writelines(updated_content)
+
+            QMessageBox.information(self, 'Success', 'Launch file updated successfully.')
+
+        except Exception as e:
+            QMessageBox.critical(self, 'Error', f'Failed to update launch file: {str(e)}')
+
     def run_command(self, command, status_message):
         process = QProcess(self)
         process.setProgram(command[0])
@@ -230,11 +343,20 @@ class GUI(QWidget):
     def show_navigation_mode(self):
         self.stacked_widget.setCurrentIndex(4)
 
+    def show_robot_mode(self):
+        self.stacked_widget.setCurrentIndex(5)
+
+    def show_robot_autonomous_mode(self):
+        self.stacked_widget.setCurrentIndex(6)
+
     def go_back_to_main(self):
         self.stacked_widget.setCurrentIndex(0)
     
     def go_back_to_autonomous_mode(self):
         self.stacked_widget.setCurrentIndex(2)
+
+    def go_back_to_remote_mode(self):
+        self.stacked_widget.setCurrentIndex(1)
 
 
     def handle_stdout(self):

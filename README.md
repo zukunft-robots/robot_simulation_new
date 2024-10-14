@@ -50,7 +50,7 @@ This project focuses on developing a graphical user interface (GUI) to control a
 Once you  run the python file , the ```GUI``` will be displayed.
 
 - Press `Remote Mode` button.
-- Press `Spawn robot` button to open gazebo and launch the robot.
+- Press `Spawn robot` button to select the robot launch gazebo.
 - Press `Open Rviz2` button to visualize the robot.
 - Press `Start Teleop` button to open a terminal to control the robot using keyboard.
 
@@ -72,7 +72,7 @@ Once you  run the python file , the ```GUI``` will be displayed.
 # Mapping
 
 - Press `Autonomous Mode` button
-- Press `Spawn robot` button to open gazebo and launch the robot.
+- Press `Spawn robot` button to select the robot launch gazebo.
 - Press `Open Rviz2` button to visualize the robot.
 - Press `Start Teleop` button to open a terminal to control the robot using keyboard.
 - Press `Mapping` button.
@@ -97,7 +97,7 @@ Once you  run the python file , the ```GUI``` will be displayed.
 # Autonomous Navigation
 
 - Press `Autonomous Mode` button
-- Press `Spawn robot` button to open gazebo and launch the robot.
+- Press `Spawn robot` button to select the robot launch gazebo.
 - Press `Open Rviz2` button to visualize the robot.
 - Press `Autonomous Navigation` button.
 - Select the map using `Select Map` button.
@@ -105,3 +105,7 @@ Once you  run the python file , the ```GUI``` will be displayed.
 - Now provide the goal to reach for the robot using `2D-Goal-pose` icon on Rviz2.
 - Now the robot will reach the targeted position.
 
+
+**NOTE: Use ctrl+C in termianl to terminate the simulation process**
+
+**NOTE: Don't close the GUI window before terminating the simulation process**
